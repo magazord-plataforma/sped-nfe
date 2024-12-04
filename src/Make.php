@@ -1734,7 +1734,10 @@ class Make
             'indTot',
             'xPed',
             'nItemPed',
-            'nFCI'
+            'nFCI',
+            'cCredPresumido',
+            'pCredPresumido',
+            'vCredPresumido'
         ];
         $std = $this->equilizeParameters($std, $possible);
         //totalizador
@@ -1811,6 +1814,30 @@ class Make
             $std->cBenef,
             false,
             $identificador . "[item $std->item] Código de Benefício Fiscal utilizado pela UF"
+        );
+        //NT 2019.001 v1.60
+        $this->dom->addChild(
+            $prod,
+            "cCredPresumido",
+            $std->cCredPresumido ?? null,
+            false,
+            $identificador . "[item $std->item] Código de Benefício Fiscal de Crédito Presumido na UF aplicado ao item"
+        );
+        //NT 2019.001 v1.60
+        $this->dom->addChild(
+            $prod,
+            "pCredPresumido",
+            $this->conditionalNumberFormatting($std->pCredPresumido, 4),
+            false,
+            $identificador . "[item $std->item] Percentual do Crédito Presumido"
+        );
+        //NT 2019.001 v1.60
+        $this->dom->addChild(
+            $prod,
+            "vCredPresumido",
+            $this->conditionalNumberFormatting($std->vCredPresumido, 2),
+            false,
+            $identificador . "[item $std->item] Valor do Crédito Presumido"
         );
         $this->dom->addChild(
             $prod,
@@ -5038,7 +5065,7 @@ class Make
             'vAliqProd'
         ];
         $std = $this->equilizeParameters($std, $possible);
-        
+
         switch ($std->CST) {
             case '01':
             case '02':
@@ -6542,7 +6569,7 @@ class Make
         }
         return $detPag;
     }
-    
+
     /**
      * Dados do intermediador
      *
@@ -7608,7 +7635,7 @@ class Make
         $comb = $CSRT . $this->chNFe;
         return base64_encode(sha1($comb, true));
     }
-    
+
     /**
      * Formatação numerica condicional
      * @param string|float|int|null $value
